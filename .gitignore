@@ -1,0 +1,14 @@
+bin/
+downloads/
+jdks/
+
+.classpath
+.project
+.settings/
+
+.vscode/*.log
+.vscode/*.tmp
+
+*.class
+*.log
+*.tmp
