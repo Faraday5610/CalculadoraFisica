@@ -27,13 +27,14 @@ public class App extends JFrame {
     // Componentes da interface.
     private JTextField campoA;
     private JTextField campoN;
+    private JTextField campoN1;
     private JLabel resultado;
 
     // Monta a janela principal.
     public App() {
         super("ProjetoFisica - Potencial eletrico");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(new Dimension(560, 450));
+        setSize(new Dimension(800, 460));
         setLocationRelativeTo(null);
         setResizable(false);
         criarInterface();
@@ -49,17 +50,17 @@ public class App extends JFrame {
         JLabel titulo = new JLabel("Potencial eletrico no centro");
         titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
         topo.add(titulo, BorderLayout.NORTH);
-        topo.add(new JLabel("Informe a distancia(a) e a carga das particulas Q2 e clique em Calcular."), BorderLayout.SOUTH);
+        topo.add(new JLabel("Informe a distancia(a) e as cargas das particulas Q2 e clique em Calcular."), BorderLayout.SOUTH);
 
         // 2. A arte ASCII exatamente como na sua imagem
-        String arte = "+2q1          (?)q2          -3q1\n" +
+        String arte = "+2q1          (1)q2          -3q1\n" +
                 "  * - - - - - - * - - - - - - *\n" +
                 "  |      a             a      |\n" +
                 "a |                           | a\n" +
                 "  |                           |\n" +
                 "  |      a             a      |\n" +
                 "  * - - - - - - * - - - - - - *\n" +
-                "-q1           (?)q2          +2q1";
+                "-q1           (2)q2          +2q1";
 
         // 3. Configurando o componente de texto para parecer um desenho
         javax.swing.JTextArea desenho = new javax.swing.JTextArea(arte);
@@ -80,11 +81,15 @@ public class App extends JFrame {
         entrada.setBorder(BorderFactory.createTitledBorder("Entrada"));
         campoA = new JTextField(10);
         campoN = new JTextField(10);
+        campoN1 = new JTextField(10);
 
         entrada.add(new JLabel("a (cm):"));
         entrada.add(campoA);
-        entrada.add(new JLabel("   multiplicador de q2:"));
+        entrada.add(new JLabel("   (1) multiplicador de q2:"));
         entrada.add(campoN);
+        entrada.add(new JLabel(" (2) multiplicador de q2:"));
+        entrada.add(campoN1);
+
 
         // Area de saida do resultado final.
         JPanel saida = new JPanel(new BorderLayout());
@@ -137,7 +142,7 @@ public class App extends JFrame {
 
         String textoN = campoN.getText().trim().replace(",", ".");
         if (textoN.isEmpty()) {
-            erro("Preencha o valor do multiplicaor de q2.");
+            erro("Preencha o valor do multiplicaor de (1) q2.");
             return;
         }
 
@@ -145,12 +150,25 @@ public class App extends JFrame {
         try {
             n = Double.parseDouble(textoN);
         } catch (NumberFormatException excecao) {
-            erro("Digite um numero valido para o multiplicaor de q2.");
+            erro("Digite um numero valido para o multiplicaor de (1) q2.");
             return;
         }
 
+        String textoN1 = campoN1.getText().trim().replace(",", ".");
+        if (textoN.isEmpty()) {
+            erro("Preencha o valor do multiplicaor de (2) q2.");
+            return;
+        }
 
-        double v = 2 * ((n * K * Q2) / (aCm / 2.0)) * 100.0;
+        double n1;
+        try {
+            n1 = Double.parseDouble(textoN1);
+        } catch (NumberFormatException excecao) {
+            erro("Digite um numero valido para o multiplicaor de (2) q2.");
+            return;
+        }
+
+        double v = ((n * K * Q2) / (aCm / 2.0) + (n1 * K * Q2) / (aCm / 2.0) ) * 100.0;
         resultado.setText("V = " + F.format(v) + " V");
     }
 
@@ -158,6 +176,7 @@ public class App extends JFrame {
     private void limpar() {
         campoA.setText("");
         campoN.setText("");
+        campoN1.setText("");
         resultado.setText("V = -");
         campoA.requestFocus();
     }
