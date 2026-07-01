@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
 public class App extends JFrame {
 
     // Constantes do problema.
@@ -48,28 +49,28 @@ public class App extends JFrame {
         // Titulo e texto de orientacao.
         // Titulo, subtitulo e constantes.
         JPanel topo = new JPanel(new BorderLayout(0, 10)); // 10 de espaco abaixo dos textos
-        
-        // Criamos um painel com 3 linhas e 1 coluna para empilhar os textos
+
+        // Painel com 3 linhas e 1 coluna para empilhar os textos
         JPanel painelTextos = new JPanel(new java.awt.GridLayout(3, 1, 0, 3));
-        
+
         JLabel titulo = new JLabel("Potencial eletrico no centro");
         titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
-        
+
         JLabel subtitulo = new JLabel("Informe a distancia (a) e os multiplicadores de q2 e clique em Calcular.");
-        
+
         // Novo JLabel exclusivo para as constantes (usando Unicode para o ²)
         JLabel constantes = new JLabel("Constantes: K = 8.987 x 10^9 N·m²/C²   •   Q2 = 6.00 x 10^-12 C");
         constantes.setForeground(java.awt.Color.GRAY); // Deixa o texto cinza
-        
+
         // Adiciona os 3 JLabels na ordem correta dentro do mini-painel
         painelTextos.add(titulo);
         painelTextos.add(subtitulo);
         painelTextos.add(constantes);
-        
+
         // Adiciona o bloco de textos no norte do topo
         topo.add(painelTextos, BorderLayout.NORTH);
 
-        // 2. A arte ASCII exatamente como na sua imagem
+        // 2. A arte ASCII
         String arte = "+2q1          (1)q2          -3q1\n" +
                 "  * - - - - - - * - - - - - - *\n" +
                 "  |      a             a      |\n" +
@@ -90,7 +91,7 @@ public class App extends JFrame {
         JPanel painelDesenho = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER));
         painelDesenho.add(desenho);
 
-        // Adiciona tudo no "topo"
+        // Adiciona tudo no topo
         topo.add(painelDesenho, BorderLayout.CENTER);
 
         // Campo de entrada de a.
@@ -106,7 +107,6 @@ public class App extends JFrame {
         entrada.add(campoN);
         entrada.add(new JLabel(" (2) multiplicador de q2:"));
         entrada.add(campoN1);
-
 
         // Area de saida do resultado final.
         JPanel saida = new JPanel(new BorderLayout());
@@ -170,6 +170,10 @@ public class App extends JFrame {
             erro("Digite um numero valido para o multiplicaor de (1) q2.");
             return;
         }
+        if (n < -100 || n > 100) {
+            erro("O multiplicador (1) deve estar entre -100 e 100.");
+            return;
+        }
 
         String textoN1 = campoN1.getText().trim().replace(",", ".");
         if (textoN.isEmpty()) {
@@ -184,23 +188,27 @@ public class App extends JFrame {
             erro("Digite um numero valido para o multiplicaor de (2) q2.");
             return;
         }
+        if (n1 < -100 || n1 > 100) {
+            erro("O multiplicador (2) deve estar entre -100 e 100.");
+            return;
+        }
 
         // O seu cálculo original continua igual
-        double v = ((n * K * Q2) / (aCm / 2.0) + (n1 * K * Q2) / (aCm / 2.0) ) * 100.0;
+        double v = ((n * K * Q2) / (aCm / 2.0) + (n1 * K * Q2) / (aCm / 2.0)) * 100.0;
 
         // 1. Monta a fórmula substituindo as variáveis do usuário (n, n1 e aCm)
         // O %.1f serve para formatar o número do usuário com 1 casa decimal no texto
         String formulaMontada = String.format(
-            "V = [ (%.1f * K * Q2) / (%.1f / 2) + (%.1f * K * Q2) / (%.1f / 2) ] * 100", 
-            n, aCm, n1, aCm
-        );
+                "V = [ (%.1f * K * Q2) / (%.1f / 2) + (%.1f * K * Q2) / (%.1f / 2) ] * 100",
+                n, aCm, n1, aCm);
 
-        // 2. Atualiza o JLabel usando HTML para mostrar a fórmula em cima e o resultado embaixo
+        // 2. Atualiza o JLabel usando HTML para mostrar a fórmula em cima e o resultado
+        // embaixo
         resultado.setText("<html>"
-            + "<div style='text-align: center;'>" // Centraliza o texto
-            + "<span style='font-size: 11px; color: gray;'>" + formulaMontada + "</span><br>" // Linha da fórmula
-            + "<font color='blue' size='5'><b>V = " + F.format(v) + " V</b></font>" // Linha do resultado
-            + "</div></html>");
+                + "<div style='text-align: center;'>" // Centraliza o texto
+                + "<span style='font-size: 11px; color: gray;'>" + formulaMontada + "</span><br>" // Linha da fórmula
+                + "<font color='blue' size='5'><b>V = " + F.format(v) + " V</b></font>" // Linha do resultado
+                + "</div></html>");
     }
 
     // Limpa os campos da interface.
