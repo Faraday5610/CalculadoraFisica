@@ -4,70 +4,70 @@
 
 ## Descricao do exercicio
 
-Este projeto resolve o exercicio da figura 24.14, no qual ha um arranjo retangular de cargas fixas e se deseja encontrar o potencial eletrico no centro do retangulo, com `V = 0` no infinito.
+Este projeto resolve e expande o exercicio da figura 24.14 do livro texto, no qual ha um arranjo retangular de cargas e se deseja encontrar o potencial eletrico no centro do retangulo, com `V = 0` no infinito.
 
-       +2q1          (1)q2          -3q1
+       (1)q1          (2)q2          (3)q1
         * - - - - - - * - - - - - - *
         |      a             a      |
       a |                           | a
         |                           |
         |      a             a      |
         * - - - - - - * - - - - - - *
-       -q1           (2)q2          +2q1
+       (4)q1          (5)q2          (6)q1
 
-Os dados do enunciado sao:
+Os dados base do enunciado sao:
 
 - `a = 39,0 cm` no exemplo original
-- `q1 = 3,40 pC`
-- `q2 = 6,00 pC`
-- cargas nos cantos: `+2q1`, `-3q1`, `-q1`, `+2q1`
-- cargas nos pontos medios: Multiplicadores variaveis `(1)q2` e `(2)q2` definidos pelo usuario
+- `q1 = 3,40 pC` (Carga base das quinas)
+- `q2 = 6,00 pC` (Carga base dos centros)
+
+Neste simulador, os multiplicadores de todas as 6 cargas podem ser definidos livremente pelo usuario.
 
 ## Resolucao fisica
 
 O potencial eletrico de uma carga puntiforme e dado por:
 `V = kq/r`
 
-Como potencial e grandeza escalar, a soma total e feita por superposicao:
+Como o potencial e uma grandeza escalar, a soma total e feita pelo principio da superposicao:
 `V_total = soma(kqi/ri)`
 
-No centro do retangulo:
+No centro do retangulo, temos duas distancias diferentes a considerar:
 
-- a distancia ate qualquer canto e `r_cantos = (a * sqrt(5)) / 2`
-- a distancia ate qualquer ponto medio superior ou inferior e `r_meios = a / 2`
+- A distancia ate qualquer quina (onde estao os q1) forma a hipotenusa de um triangulo: `r_cantos = a * sqrt(5) / 2`
+- A distancia ate os pontos medios superior ou inferior (onde estao os q2) e a metade da altura: `r_meios = a / 2`
 
-Substituindo as cargas do problema (onde `n` e `n1` sao os multiplicadores):
-`V = k * [(2q1 - 3q1 - q1 + 2q1)/r_cantos + (n*q2 + n1*q2)/r_meios]`
+Agrupando as cargas pelas suas distancias e colocando as constantes em evidencia, a formula geral implementada no codigo e:
 
-Os termos dos cantos se cancelam:
-`2q1 - 3q1 - q1 + 2q1 = 0`
+`V = { [ (n1 + n3 + n4 + n6) * K * Q1 ] / r_cantos } + { [ (n2 + n5) * K * Q2 ] / r_meios }`
 
-Logo, sobra apenas a contribuicao das cargas centrais escolhidas pelo usuario:
-`V = k * (n*q2 + n1*q2) / (a/2)`
+_(Onde n1 a n6 sao os multiplicadores digitados pelo usuario)._
 
-Que no codigo (convertendo `a` para metros) e calculado como:
-`V = [ (n * K * Q2) / (a / 2) + (n1 * K * Q2) / (a / 2) ] * 100`
+**Nota:** No exercicio original do livro, os multiplicadores das quinas sao `+2`, `-3`, `-1` e `+2`. A soma deles resulta em zero, anulando a primeira parte da equacao. O simulador demonstra isso perfeitamente se voce utilizar esses valores!
 
 ## Regras de entrada
 
 O programa aceita apenas:
 
-- numeros validos
-- `a > 0`
-- para evitar valores sem sentido neste exercicio, foi colocado um limite superior de `1000 cm` para `a`
-- para evitar objetos macroscopicos irreais, o limite dos multiplicadores (1) e (2) de q2 deve estar entre `-100` e `100`
+- Numeros validos (positivos ou negativos, aceitando notacao cientifica).
+- `a > 0`. Para evitar valores sem sentido de distancias astronomicas, ha um limite superior de `1000 cm` para `a`.
+- Para evitar objetos macroscopicos irreais e manter o conceito de particulas pontuais, os multiplicadores (1 a 6) possuem um limite entre `-100` e `100`.
 
 ## Funcionalidades
 
-- interface grafica em Java Swing com exibicao de texto e diagrama ASCII
-- campos independentes para informar a distancia `a` e os multiplicadores `n` e `n1` de `q2`
-- exibicao da formula matematica montada passo a passo com os valores do usuario
-- exibicao do potencial final em volts
-- tratamento de erro para campos vazios, textos invalidos e valores fora do intervalo
-- botoes `Calcular` e `Limpar`
+- Interface grafica em Java Swing com layout estruturado e diagrama ASCII.
+- 7 campos independentes para informar a distancia `a` e os multiplicadores de todas as particulas.
+- Exibicao dinamica da formula matematica completa, montada passo a passo com os valores substituidos e formatados com sinais corretos (+/-).
+- Tratamento rigido de excecoes para campos vazios, textos invalidos e limites de valores.
+- Botoes `Calcular` e `Limpar` com reorganizacao de foco automatico.
 
 ## Resultado esperado com o exemplo do enunciado
 
-Ao informar `a = 39` e os multiplicadores `4` e `4` (conforme o exercicio original), a interface deve mostrar a formula substituida e o resultado final de aproximadamente:
+Para obter o resultado original do livro, preencha os campos com os seguintes valores:
+
+- `a` = 39
+- Cargas q1 (quinas): `2`, `-3`, `-1` e `2`
+- Cargas q2 (centros): `4` e `4`
+
+O resultado esperado na interface sera a formula montada e o valor final de aproximadamente:
 
 - `V = 2,2123 V`
